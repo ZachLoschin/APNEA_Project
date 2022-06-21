@@ -1,0 +1,10 @@
+antropy
+lightgbm
+matplotlib
+mne
+numpy
+openpyxl
+pandas
+scipy
+seaborn
+yasa
