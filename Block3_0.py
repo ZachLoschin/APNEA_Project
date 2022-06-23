@@ -42,15 +42,15 @@ print("Creating directories...")
 block3dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3/")
 # block3dir.mkdir(parents=True, exist_ok=True)
 
-dict_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3/Excel_Data/")
-# dict_dir.mkdir(parents=True, exist_ok=True)
+dict_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3/Excel_Data_All/")
+dict_dir.mkdir(parents=True, exist_ok=True)
 
 # Data dir for smoothed data
-data_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/APNEA Raw Files/Subset2/")
+data_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/APNEA Raw Files/AllEDFs/")
 files = pathlib.Path(data_dir).glob('*')
 
-dens_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3/Density_Hypno_Plots/")
-# dens_dir.mkdir(parents=True, exist_ok=True)
+dens_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3/Density_Hypno_Plots_All/")
+dens_dir.mkdir(parents=True, exist_ok=True)
 
 """
 Create dataframe to hold spindle percetage data
@@ -471,5 +471,3 @@ for file in files:
 """
 After patient loop
 """
-
-
