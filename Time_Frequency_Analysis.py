@@ -37,7 +37,7 @@ Block Layout:
 print("Creating directories...")
 
 # Directory for official running
-block3dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_5/")
+block3dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_51/")
 block3dir.mkdir(parents=True, exist_ok=True)
 
 # Local directory for testing
@@ -45,7 +45,7 @@ block3dir.mkdir(parents=True, exist_ok=True)
 # block3dir.mkdir()
 
 # Shared directory for official runs
-dict_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_5/Excel_Data_All/")
+dict_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_51/Excel_Data_All/")
 
 # Local directory for testing
 #dict_dir = pathlib.Path("Block3_Local/Excel_Data/")
@@ -59,19 +59,20 @@ data_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/APNEA Raw Fi
 files = pathlib.Path(data_dir).glob('*')
 
 # Plot directory for official runs
-dens_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_5/Density_Hypno_Plots/")
+dens_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_51/Density_Hypno_Plots/")
 
 # Local directory for testing
 # dens_dir = pathlib.Path("Block3_Local/Plot_Data")
 dens_dir.mkdir(parents=True, exist_ok=True)
 
-error_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_5/Error_Storage/")
+error_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_51/Error_Storage/")
 error_dir.mkdir()
 
 """
 Create dataframe to hold spindle percentage data
 """
-SpindlePerc = pd.DataFrame(columns=["ID", "W", "REM", "N3", "N2", "N1"])
+SpindlePerc = pd.DataFrame(columns=["ID", "W_Spindles", "REM_Spindles", "N3_Spindles", "N2_Spindles", "N1_Spindles",
+                                    "W_Time", "REM_Time", "N3_Time", "N2_Time", "N1_Time"])
 
 try:
     # Import data
@@ -236,7 +237,7 @@ try:
 
             # Var for indexing since index is not consistently increasing by one in summary
             idex = 0
-
+            spindlesRemoved = 0
             for index, row in summary.iterrows():
 
                 # Find start and stop times
@@ -266,7 +267,9 @@ try:
                 peaks, properties = scipy.signal.find_peaks(ave)
 
                 # If we detect multiple peaks
-                if len(peaks) > 1:
+                if len(peaks) != 1:
+                    # Increment spindles removed counter
+                    spindlesRemoved = spindlesRemoved + 1
 
                     # Mark the spindle for removal
                     multPeak[idex] = 1
@@ -308,6 +311,29 @@ try:
             # Add a buffer to hypno enum, so it is large enough for looping
             hypno_enum_buffer = hypno_enum
             hypno_enum_buffer.append(hypno_enum[-1])
+
+            # Calculate percent time spent in each sleep stage
+            w, r, n1, n2, n3 = 0, 0, 0, 0, 0
+
+            # Mark how many of each stage there are in hypno_enum
+            for element in hypno_enum:
+                if element == 4:
+                    w = w+1
+                elif element == 3:
+                    r = r+1
+                elif element == 3:
+                    n1 = n1+1
+                elif element == 2:
+                    n2 = n2+1
+                elif element == 1:
+                    n3 = n3+1
+
+            # Add percent of time in each sleep stage to the DataFrame
+            summary['Wake_Frac'] = (w/len(hypno_enum))
+            summary['REM_Frac'] = (r/len(hypno_enum))
+            summary['N1_Frac'] = (n1/len(hypno_enum))
+            summary['N2_Frac'] = (n2/len(hypno_enum))
+            summary['N3_Frac'] = (n3/len(hypno_enum))
 
             # Create index for iterating
             iterr = 0
@@ -445,7 +471,8 @@ try:
 
                 # Create array to be put into df
                 toDF = [ID, wSpindles / spindleTotal, rSpindles / spindleTotal, n3Spindles / spindleTotal,
-                        n2Spindles / spindleTotal, n1Spindles / spindleTotal]
+                        n2Spindles / spindleTotal, n1Spindles / spindleTotal, w/len(hypno_enum), r/len(hypno_enum),
+                        n3/len(hypno_enum), n2/len(hypno_enum), n1/len(hypno_enum)]
             else:
                 print("***SUM AND HYPNOENUM NOT EQUAL LENGTH***")
                 toDF = [ID, 'Error', 'Error', 'Error', 'Error', 'Error']
