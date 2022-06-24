@@ -321,11 +321,11 @@ try:
                     w = w+1
                 elif element == 3:
                     r = r+1
-                elif element == 3:
-                    n1 = n1+1
                 elif element == 2:
-                    n2 = n2+1
+                    n1 = n1+1
                 elif element == 1:
+                    n2 = n2+1
+                elif element == 0:
                     n3 = n3+1
 
             # Add percent of time in each sleep stage to the DataFrame
