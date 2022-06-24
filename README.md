@@ -1,12 +1,14 @@
 # APNEA_Project
 
-Currently running Block3_0 on 6/21/2022.
+For the detection of spindles and classification of spindle parameters for statistical analysis of spindles in Hodgkin Lymphoma survivors and Obstructive Sleep Apnea Patients.
 
-To run any code you will need to install the requirements.txt using the command "pip install -r requirements.txt".
+Spindle detection and post processing functions completed as of 6/24/2022
 
-You will also need to download one of the example edf files and be sure to specify the path correctly.
+To run any functions for testing you will need a .edf file in your local directory.
 
-If you contribute, do NOT run any mkdir commands in the APNEA folder if you are not 100 percent sure that you are not overwriting anything.
+Be sure to change the paths at the top of any .py file you would like to run to your local directories.
+
+If you have access to the cluster folders, be very careful to not run a mkdir() command and overwrite any data!
 
 # Spindle Haiku:
 
@@ -15,3 +17,5 @@ Counting sheep, deep breaths
 Spindles dancing in my head
 
 Weaving peaceful dreams
+
+            - Zach and Isabel
