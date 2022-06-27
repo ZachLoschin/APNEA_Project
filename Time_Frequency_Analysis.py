@@ -37,15 +37,15 @@ Block Layout:
 print("Creating directories...")
 
 # Directory for official running
-block3dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_51/")
+block3dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_52/")
 block3dir.mkdir(parents=True, exist_ok=True)
 
 # Local directory for testing
 # block3dir = pathlib.Path("Block3_Local/Data")
 # block3dir.mkdir()
 
-# Shared directory for official runs
-dict_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_51/Excel_Data_All/")
+# Shared directory for official run
+dict_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_52/Excel_Data_All/")
 
 # Local directory for testing
 #dict_dir = pathlib.Path("Block3_Local/Excel_Data/")
@@ -59,14 +59,14 @@ data_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/APNEA Raw Fi
 files = pathlib.Path(data_dir).glob('*')
 
 # Plot directory for official runs
-dens_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_51/Density_Hypno_Plots/")
+dens_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_52/Density_Hypno_Plots/")
 
 # Local directory for testing
 # dens_dir = pathlib.Path("Block3_Local/Plot_Data")
 dens_dir.mkdir(parents=True, exist_ok=True)
 
-error_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_51/Error_Storage/")
-error_dir.mkdir()
+error_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Block3_52/Error_Storage/")
+error_dir.mkdir(parents=True, exist_ok=True)
 
 """
 Create dataframe to hold spindle percentage data
@@ -74,9 +74,9 @@ Create dataframe to hold spindle percentage data
 SpindlePerc = pd.DataFrame(columns=["ID", "W_Spindles", "REM_Spindles", "N3_Spindles", "N2_Spindles", "N1_Spindles",
                                     "W_Time", "REM_Time", "N3_Time", "N2_Time", "N1_Time"])
 
-try:
-    # Import data
-    for file in files:
+# Import data
+for file in files:
+    try:
         with open(file, 'rb') as f:
             """
             1) Raw data import
@@ -490,9 +490,9 @@ try:
             print("Saving perc data...")
             # Save Spindle Perc to an Excel file
             SpindlePerc.to_excel(perc_path)
-except:
-    print("ERROR RUNNING %s" % ID)
-    error_file = 'Error_%s' % ID
-    error_path = error_dir / error_file
-    with open(error_path, 'w') as e:
-        e.write('Error running %s\n' % ID)
+    except:
+        print("ERROR RUNNING %s" % ID)
+        error_file = 'Error_%s' % ID
+        error_path = error_dir / error_file
+        with open(error_path, 'w') as e:
+            e.write('Error running %s\n' % ID)
