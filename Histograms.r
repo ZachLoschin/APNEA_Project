@@ -2,6 +2,7 @@
 # St. Jude Children's Research Hospital
 # Department of Diagnostic Imaging, Ranga Group
 # statistical Analysis for Sleep Apnea Project
+# 6 June 2022
 
 
 # Function definitions
@@ -11,10 +12,11 @@ plotDistribution = function (x, title, xlabel, ylabel, filenam, breks) {
   x <- na.omit(x)
   png(filename = filenam)
   hist( x,col = "light blue",
-        probability = TRUE,
+        # probability = TRUE,
         main=title,
         xlab=xlabel,
-        ylab=ylabel, 
+        ylab=ylabel,
+        xlim=c(0, 1),
         breaks=breks)
   lines(density(x), col = "blue", lwd = 3)
   rug(x)
@@ -62,17 +64,4 @@ for(i in 7:ncol(my_data)){
   # Call my distribution function
   plotDistribution(toPlot, title, xLabel, yLabel, filename, breaks)
 }
-
-
-
-
-
-# for(i in 3:7){
-#   hist(my_data[, i], col=colors[i-2], add=TRUE)
-# }
-# legend('topright', c('W', 'R', 'N3', "N2", "N1"), fill=colors())
-
-NoMissing <- my_data[,3][!is.na(my_data[,3])]
-
-
 
