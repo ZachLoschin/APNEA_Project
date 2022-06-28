@@ -140,3 +140,55 @@ for(i in 3:7){
   plotCompareDistribution(x=toPlotControl, y=toPlotCase, xlabel=xLabel, ylabel = yLabel, title=title, filenam = filename, breks=breaks)
 }
 
+for(i in 8:12){
+  # Define data to plot
+  toPlotCase = as.numeric(unlist(caseData[ , i]))
+  toPlotControl = as.numeric(unlist(my_data[ , i]))
+  
+  # Get the state name
+  state = unlist(c(strsplit(name[i], split="_")))[1]
+  
+  # Define graphing parameters
+  title = paste("Comparison of", state, "btwn Cases and Controls")
+  xLabel = paste("Fraction of time in", state, "State")
+  yLabel = "Number of Patients"
+  filename = paste(histpath, "\\CompTime_", name[i], ".png", sep="")
+  breaks = 25
+  
+  # Call plot function
+  plotCompareDistribution(x=toPlotControl, y=toPlotCase, xlabel=xLabel, ylabel = yLabel, title=title, filenam = filename, breks=breaks)
+}
+
+# Define list of files
+file_list <- list.files(path="Z:\\ResearchHome\\ClusterHome\\zloschin\\Cases_Excel_Data")
+
+freqValuesCases = c()
+
+for(j in 1:length(file_list)){
+  
+  # Read in excel
+  tempDF <- read_excel(file_list[i])
+  cat(paste("Read", i))
+  
+  # Initialize array for specific patients Hz values
+  patientHz = c()
+  
+  for(i in 1:nrow(tempDF)){
+    # Check if proper sleep state
+    if(tempDF[i,22] == 2 || tempDF[i,22] == 1){
+      if(tempDF[i,9] <= 12.5)
+        patientHz = append(patientHz, as.numeric(tempDF[i, 9]))
+    }
+  }
+  freqValues = append(freqValues, patientHz)
+}
+
+
+
+
+
+
+
+
+
+
