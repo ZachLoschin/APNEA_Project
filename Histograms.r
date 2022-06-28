@@ -17,6 +17,7 @@ plotDistribution = function (x, title, xlabel, ylabel, filenam, breks) {
         xlab=xlabel,
         ylab=ylabel,
         xlim=c(0, 1),
+        ylim=c(0, 80),
         breaks=breks)
   lines(density(x), col = "blue", lwd = 3)
   rug(x)
@@ -41,8 +42,9 @@ name = names(my_data)
 for(i in 3:7){
   # Prepare inputs for dist function
   toPlot = as.numeric(unlist(my_data[ , i]))
-  title = name[i]
-  xLabel = "Fraction of Spindles in Title State"
+  state = unlist(c(strsplit(name[i], split="_")))[1]
+  title = paste("Fraction of Total Spindles detected in", state, "State")
+  xLabel = paste("Fraction of Spindles in", state, "State")
   yLabel = "Number of Patients"
   filename = paste(histpath, "\\Hist_", name[i], ".png", sep="")
   breaks = 25
@@ -55,8 +57,9 @@ for(i in 3:7){
 for(i in 7:ncol(my_data)){
   # Prepare inputs for dist function
   toPlot = as.numeric(unlist(my_data[ , i]))
-  title = name[i]
-  xLabel = "Fraction of Spindles in Title State"
+  state = unlist(c(strsplit(name[i], split="_")))[1]
+  title = paste("Fraction of Total Time Spent in", state, "State")
+  xLabel = paste("Fraction of time spent in", state, "State")
   yLabel = "Number of Patients"
   filename = paste(histpath, "\\Hist_", name[i], ".png", sep="")
   breaks = 25
