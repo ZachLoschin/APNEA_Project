@@ -158,39 +158,3 @@ for(i in 8:12){
   # Call plot function
   plotCompareDistribution(x=toPlotControl, y=toPlotCase, xlabel=xLabel, ylabel = yLabel, title=title, filenam = filename, breks=breaks)
 }
-
-# Define list of files
-file_list <- list.files(path="Z:\\ResearchHome\\ClusterHome\\zloschin\\Cases_Excel_Data",
-                        full.names = TRUE,
-                        recursive = TRUE)
-
-freqValuesCases <- c()
-
-for(j in 1:length(file_list)){
-  
-  # Read in excel
-  tempDF <- read_excel(file_list[j])
-  cat(paste("Read", j))
-  cat("\n")
-  
-  # Initialize array for specific patients Hz values
-  patientHz = c()
-  
-  for(i in 1:nrow(tempDF)){
-    if(tempDF[i,22] == 2 || tempDF[i,22] == 1){
-      if(tempDF[i,9] <= 12.5)
-        patientHz = append(patientHz, as.numeric(tempDF[i, 9]))
-      }
-    }
-  freqValuesCases <- append(freqValuesCases, mean(patientHz))
-}
-
-
-
-
-
-
-
-
-
-
