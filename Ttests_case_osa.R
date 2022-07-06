@@ -8,96 +8,12 @@
 # OSA vs non-OSA spindle frequency data
 
 
-# Function definitions
-plotDistribution = function (x, title, xlabel, ylabel, filenam, breks) {
-  # Function to plot histogram + line
-  N = length(x)
-  x <- na.omit(x)
-  png(filename = filenam)
-  hist( x,col = "light blue",
-        # probability = TRUE,
-        main=title,
-        xlab=xlabel,
-        ylab=ylabel,
-        xlim=c(0, 1),
-        ylim=c(0, 80),
-        breaks=breks)
-  lines(density(x), col = "blue", lwd = 3)
-  rug(x)
-  print(N-length(x))
-  dev.off()
-}
-
-plotCompareDistribution = function (x, y, title, xlabel, ylabel, filenam, breks){
-  # Define transparent colors for easy visualization
-  myBlue <- rgb(0, 0, 255, max = 255, alpha = 64, names = "blue25")
-  myRed <- rgb(255, 0, 0, max = 255, alpha = 64, names = "red25")
-  
-  # Get rid of missing values
-  x <- na.omit(x)
-  y <- na.omit(y)
-  
-  # Create file for saving
-  png(filename=filenam)
-  
-  # Plot first histogram with given parameters
-  hist(x,col = myBlue,
-       main = title,
-       xlab=xlabel,
-       ylab=ylabel,
-       xlim=c(0,1),
-       ylim=c(0,80),
-       breaks=breks)
-  # Plot line
-  lines(density(x), col="blue", lwd=3)
-  
-  # Plot second histogram with given parameters
-  hist(y,col=myRed,
-       main = title,
-       xlab=xlabel,
-       ylab=ylabel,
-       xlim=c(0,1),
-       ylim=c(0,80),
-       breaks=breks,
-       add=TRUE)
-  # Plot line
-  lines(density(y), col="red", lwd=3)
-  legend("topright", c("Case", "Control"), fill=c("red", "blue"))
-  
-  # Clear figure
-  dev.off()
-  
-}
-
 # Import library to read Excel files
 library("readxl")
 
 
 # Set up path for plot storage
 histpath = "C:\\Users\\zloschin\\Documents\\APNEA_Project\\T_Test_Graphs"
-
-
-# Define list of files
-file_list_cont <- list.files(path="Z:/ResearchHome/ClusterHome/zloschin/Spind_Data_Case_Controls/Controls_Excel_Data",
-                        full.names = TRUE,
-                        recursive = TRUE)
-
-freqValuesControls <- c()
-
-for(i in 1:length(file_list_cont)){
-  # Read in excel
-  tempDF <- read_excel(file_list_cont[i])
-  tempDF <- as.data.frame(tempDF)
-  tempDF2 <- tempDF[tempDF$State == 1 | tempDF$State == 0 , ]
-  tempDF3 <- tempDF2[tempDF2$Frequency <= 12.5 , ]
-  
-  freqs <- mean(tempDF3$Frequency, na.rn=TRUE)
-  freqValuesControls = append(freqValuesCases, freqs)
-  
-}
-
-# freqValuesCases and freqValuesControls, do t-test
-testResult = t.test(freqValuesCases, freqValuesControls)
 
 
 # Cases: OSA vs non-OSA comparison
@@ -170,6 +86,13 @@ legend("topright", c("OSA", "NonOSA"), fill=c("red", "blue"))
 dev.off()
 
 
+# Check for case normality
+qqnorm(freqValuesOSA, main='Cases: Osa Check for Normality')
+qqline(freqValuesOSA)
+
+qqnorm(freqValuesnonosa, main='Cases: NonOSA Check for Normality')
+qqline(freqValuesnonosa)
+
 
 
 # Controls: OSA vs nonOSA comparison
@@ -240,3 +163,10 @@ hist(freqValuesnonosa, col=myBlue, breaks=25, xlab="Spindle Frequency",
 lines(density(freqValuesnonosa), col='blue')
 legend("topright", c("OSA", "NonOSA"), fill=c("red", "blue"))
 dev.off()
+
+# Check for control normality
+qqnorm(freqValuesOSA, main='Control: Osa Check for Normality')
+qqline(freqValuesOSA)
+
+qqnorm(freqValuesnonosa, main='Control: NonOSA Check for Normality')
+qqline(freqValuesnonosa)
