@@ -152,7 +152,7 @@ freqValuesOSA = na.omit(freqValuesOSA)
 freqValuesnonosa= na.omit(freqValuesnonosa)
 hist(freqValuesOSA, col=myRed, breaks=20, xlab="Spindle Frequency", 
      ylab="Number of Patients",
-     main = paste("Cases: Osa Vs NonOSA Comparison \nT-test P-val =", 
+     main = paste("Cases: Osa Vs NonOSA Comparison \nT-Test P-val =", 
                   round(testResult$p.value, digits=3), "\nDF =", 
                   testResult$parameter))
 
@@ -160,11 +160,12 @@ lines(density(freqValuesOSA), col='red')
 
 hist(freqValuesnonosa, col=myBlue, breaks=20, xlab="Spindle Frequency", 
      ylab="Number of Patients",
-     main = paste("Cases: Osa Vs NonOSA Comparison \nT-test P-val =", 
+     main = paste("Cases: Osa Vs NonOSA Comparison \nT-Test P-val =", 
                   round(testResult$p.value, digits=3), "\nDF =", 
                   testResult$parameter), add=TRUE)
 
 lines(density(freqValuesnonosa), col='blue')
+legend("topright", c("OSA", "NonOSA"), fill=c("red", "blue"))
 
 dev.off()
 
@@ -224,7 +225,7 @@ freqValuesOSA = na.omit(freqValuesOSA)
 freqValuesnonosa= na.omit(freqValuesnonosa)
 hist(freqValuesOSA, col=myRed, breaks=25, xlab="Spindle Frequency", 
      ylab="Number of Patients",
-     main = paste("Controls: Osa Vs NonOSA Comparison \nT-test P-val =", 
+     main = paste("Controls: Osa Vs NonOSA Comparison \nT-Test P-val =", 
                   round(testResult$p.value, digits=3), 
                   "\n", "DF =", testResult$parameter))
 
@@ -232,15 +233,10 @@ lines(density(freqValuesOSA), col='red')
 
 hist(freqValuesnonosa, col=myBlue, breaks=25, xlab="Spindle Frequency", 
      ylab="Number of Patients",
-     main = paste("Controls: Osa Vs NonOSA Comparison \nT-test P-val =", 
+     main = paste("Controls: Osa Vs NonOSA Comparison \nT-Test P-val =", 
                   round(testResult$p.value, digits=3), 
                   "\n", "DF =", testResult$parameter), add=TRUE)
 
 lines(density(freqValuesnonosa), col='blue')
-
+legend("topright", c("OSA", "NonOSA"), fill=c("red", "blue"))
 dev.off()
-
-
-
-
-
