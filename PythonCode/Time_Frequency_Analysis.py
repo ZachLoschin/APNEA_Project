@@ -277,24 +277,25 @@ for file in files:
                 # Iterate index variable
                 idex = idex+1
 
-                """
-                Plotting settings below, keeping here for reference.
-                """
-                # plt.clf()
-                # plt.figure(1, figsize=(80, 80), dpi=100)
-                # plt.imshow(toGraph, cmap='rainbow', interpolation='bilinear', aspect='auto')
-                # ticks = np.linspace(9, 20, num=40)
-                # plt.ylim(9, 20)
-                # plt.yticks(ticks)
-                # plt.show()
-                #
-                # plt.clf()
-                # plt.plot(ave)
-                # plt.show()
-
             # Remove these spindles from summary
             summary["Mult_Peaks"] = multPeak
             summary = summary.loc[summary["Mult_Peaks"] == 0]
+
+            """
+            Plotting settings below, keeping here for reference.
+            """
+            # plt.clf()
+            # plt.figure(1, figsize=(80, 80), dpi=100)
+            # plt.imshow(toGraph, cmap='rainbow', interpolation='bilinear', aspect='auto')
+            # ticks = np.linspace(9, 20, num=40)
+            # plt.ylim(9, 20)
+            # plt.yticks(ticks)
+            # plt.show()
+            #
+            # plt.clf()
+            # plt.plot(ave)
+            # plt.show()
+
             """
             4.75) Add Sleep stage to each detected spindle
             """
