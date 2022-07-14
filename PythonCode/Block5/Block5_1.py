@@ -14,7 +14,7 @@ St. Jude Children's Research Hospital
 Department of Diagnostic Imaging
 Ranga Group
 Sleep Apnea Project
-12 July 2022
+14 July 2022
 """
 
 """
@@ -26,22 +26,22 @@ Sleep Apnea Project
 """
 
 # Local data folder for testing
-block3dir = pathlib.Path("../Block3_Local/Data")
+block3dir = pathlib.Path("../../Block3_Local/Data")
 # block3dir.mkdir()
 
 # Local dict for holding output excel data
-dict_dir = pathlib.Path("../Block3_Local/Excel_Data/")
+dict_dir = pathlib.Path("../../Block3_Local/Excel_Data/")
 
 # Local plot saving directory
-dens_dir = pathlib.Path("../Block3_Local/Plot_Data")
+dens_dir = pathlib.Path("../../Block3_Local/Plot_Data")
 # dens_dir.mkdir(parents=True, exist_ok=True)
 
 # Local data for reading in .edf files
-data_dir = pathlib.Path("../Block3_Local/Data")
+data_dir = pathlib.Path("../../Block3_Local/Data")
 files = pathlib.Path(data_dir).glob('*')
 
 # Local data for reading in night division data
-div_data = pathlib.Path("../Block3_Local/Rec_Times_50.xlsx")
+div_data = pathlib.Path("../../Block3_Local/Rec_Times_50.xlsx")
 
 # Read in division data to DataFrame
 DivDF = pd.read_excel(div_data)
