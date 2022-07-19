@@ -50,30 +50,28 @@ Pipline_1 Layout: Import, compute hypnograms, save .pngs
 """
 0) Create Directories
 """
-
 print("Creating directories...")
 
-"""
 # Data directory for official runs
-data_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/APNEA Raw Files/Analysis_EDFs/")
+data_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/APNEA Raw Files/Subset1/")
 
 # Directory for official running
-block3dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Pipeline1/")
-block3dir.mkdir(parents=True, exist_ok=True)
+pipdir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Pipeline1/")
+pipdir.mkdir(parents=True, exist_ok=True)
 
 # Shared directory for official runs
 dict_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Pipeline1/Excel_Data_All/")
 dict_dir.mkdir(parents=True, exist_ok=True)
 
 # Plot directory for official runs
-dens_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Pipeline1/Density_Hypno_Plots/")
-dens_dir.mkdir(parents=True)
+dens_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Pipeline1/Hypnogram_Plots/")
+dens_dir.mkdir(parents=True, exist_ok=True)
 
 # Official error directory
 error_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Pipeline1/Error_Storage/")
-error_dir.mkdir(parents=True)
-"""
+error_dir.mkdir(parents=True, exist_ok=True)
 
+"""
 # Local data folder for testing
 block3dir = pathlib.Path("../Block3_Local/Data")
 # block3dir.mkdir()
@@ -95,10 +93,13 @@ div_data = pathlib.Path("../Official_Runs_Folder/CompleteTable2.xlsx")
 # Local directory for error storage
 error_dir = pathlib.Path("../Block3_Local/Error_Storage")
 error_dir.mkdir(parents=True, exist_ok=True)
+"""
+
+# Local data for reading in night division data
+div_data = pathlib.Path("../Official_Runs_Folder/CompleteTable2.xlsx")
 
 # Read in division data to DataFrame
 DivDF = pd.read_excel(div_data)
-
 
 # Create dataframe for holding the percent time in each state
 StateTimes = pd.DataFrame()
@@ -116,6 +117,8 @@ NREM2PercN2 = []
 NREM3PercN2 = []
 
 ID_List = DivDF["EDF_ID"]
+
+files = pathlib.Path(data_dir).glob('*')
 
 # For each .edf file
 for file in files:
@@ -186,6 +189,12 @@ for file in files:
 
                 # Plot and save hypnogram for night 1
                 plt.plot(Night1_HypnoEnum)
+
+                plt.tight_layout()
+                plt.yticks([0, 1, 2, 3, 4], ["N3", "N2", "N1", "R", "WAKE"])
+                plt.xlabel("Epochs (30s)")
+                plt.title('Hypnogram: %s' % ID)
+
                 plt.savefig(Night1_Path)
                 plt.clf()
 
@@ -274,11 +283,22 @@ for file in files:
                 # Plot and save hypnogram for night 1
                 plt.plot(Night1_HypnoEnum)
 
+                plt.tight_layout()
+                plt.yticks([0, 1, 2, 3, 4], ["N3", "N2", "N1", "R", "WAKE"])
+                plt.xlabel("Epochs (30s)")
+                plt.title('Hypnogram: %s' % ID)
+
                 plt.savefig(Night1_Path)
                 plt.clf()
 
                 # Plot and save hypnogram for night 2
                 plt.plot(Night2_HypnoEnum)
+
+                plt.tight_layout()
+                plt.yticks([0, 1, 2, 3, 4], ["N3", "N2", "N1", "R", "WAKE"])
+                plt.xlabel("Epochs (30s)")
+                plt.title('Hypnogram: %s' % ID)
+
                 plt.savefig(Night2_Path)
                 plt.clf()
 
