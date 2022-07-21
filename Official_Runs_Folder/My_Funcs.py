@@ -198,13 +198,14 @@ def plot_density(rawImport, data, ID, summary, dens_dir, night):
     print("Plotting buckets...")
     Plot, Axis = plt.subplots(2)
     Axis[0].plot(timeBuckets, sumBuckets)
-    Axis[0].set_title("Spindle Occurrences per Bucket of Time: %ds" % bucket_size)
+    Axis[0].set_title("Spindle Density and Hypnogram")
     Axis[0].set_ylabel("Occurrences")
 
     Axis[1].plot(hypno_enum_60)
     Axis[1].set_yticks(ticks=[0, 1, 2, 3, 4])
     lab = ["N3", "N2", "N1", "R", "W"]
     Axis[1].set_yticklabels(lab)
+    Axis[1].set_xlabel("Time (60s Buckets)")
 
     print("saving figure...")
     figure_file = 'Density_Hypno_%s_%s' % (ID, str(night))
