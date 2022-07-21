@@ -90,7 +90,7 @@ def detect_spindles(data):
     3) Yasa spindle detection
     """
     print("Detecting spindles...")
-    thresh = {'rel_pow': None, 'corr': None, 'rms': 2}
+    thresh = {'rel_pow': None, 'corr': None, 'rms': 2.5}
     # TRY THE EPOCHED DATA HERE INSTEAD
     sp = yasa.spindles_detect(data["EEG_ArtZero"], data["fs"], ch_names=['EEG'], freq_sp=(9, 15), thresh=thresh)
 
