@@ -61,9 +61,10 @@ Pipline_1 Layout: Import, compute hypnograms, save .pngs
 """
 
 print("Creating directories...")
+count = 0
 
 # Data directory for official runs
-data_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/APNEA Raw Files/Subset1/")
+data_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/APNEA Raw Files/Analysis_EDFs/")
 
 # Directory for official running
 pipdir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Pipeline2/")
@@ -117,7 +118,7 @@ files = pathlib.Path(data_dir).glob('*')
 
 # Import the data
 for file in files:
-
+    count = count + 1
     # Setup try for each file to not stop running if one error occurs
     try:
         with open(file, 'rb') as f:
@@ -249,7 +250,7 @@ for file in files:
                 """
                 12) Save spindle data to excel
                 """
-                n1File = "Spindle_%s_N1" % ID
+                n1File = "Spindle_%s_N1.xlsx" % ID
                 n1Path = dict_dir / n1File
                 spindles.to_excel(n1Path)
 
@@ -354,6 +355,7 @@ for file in files:
                 n2Path = dict_dir / n2File
                 Spindles_N2.to_excel(n2Path)
 
+                print("********Completed number: %d ********", count)
     except:
         print("PROBLEM PROBLEM PROBLEM ***** : ID = %s" % ID)
         error_file = '%s_%s.txt' % (ID, 'ErrorMSG')
