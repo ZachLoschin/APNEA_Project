@@ -75,6 +75,7 @@ def hypno_to_plot_art(hypno):
             hypno_enum.append(-1)
     return hypno_enum
 
+
 def get_ID(file):
     filee = str(file)
     a = filee.split('\\')
@@ -85,14 +86,15 @@ def get_ID(file):
     return ID
 
 
-def detect_spindles(data):
+def detect_spindles(data, hypnoEnum, night, samples1):
     """
     3) Yasa spindle detection
     """
     print("Detecting spindles...")
-    thresh = {'rel_pow': None, 'corr': None, 'rms': 2.5}
+    thresh = {'rel_pow': None, 'corr': None, 'rms': 2}
     # TRY THE EPOCHED DATA HERE INSTEAD
-    sp = yasa.spindles_detect(data["EEG_ArtZero"], data["fs"], ch_names=['EEG'], freq_sp=(9, 15), thresh=thresh)
+    sp = yasa.spindles_detect(data["EEG_ArtZero"], data["fs"], ch_names=['EEG'],
+                              freq_sp=(9, 15), thresh=thresh)
 
     """
     4) Learn the spindle object
@@ -112,9 +114,35 @@ def detect_spindles(data):
     Beta_Noise = np.ones(len(summary))
     Art_Noise = np.zeros(len(summary))
 
+    # Create vector to hold the sleep state of each spindle
+    spindleStates = []
+    hypnoBySecond = np.repeat(hypnoEnum, 30)
+    print(len(hypnoBySecond))
+
+    # If night 1, index the hypnogram from the front
+    # If night 2, start indexing the hypnogram from where night 2 starts
     for index, row in summary.iterrows():
         start = int(row['Start'] * data['fs'])
         end = int(row["End"] * data['fs'])
+
+        # The hypnoBySecond has one state per second. So if we input the time of the spindle -1 to account for
+        # base zero indexing, the state at this index of hypnoBySecond will bet the state the spindle is in
+
+        if night == 1:
+            try:
+                state = hypnoBySecond[round(row["Start"]) - 1]
+                spindleStates.append(state)
+            except:
+                state = -1
+                spindleStates.append(state)
+        else:
+            try:
+                night2_start_seconds = samples1 / 256
+                state = hypnoBySecond[round(night2_start_seconds + row["Start"]) - 1]
+                spindleStates.append(state)
+            except:
+                state = -1
+                spindleStates.append(state)
 
         # If there are no beta or threshold artifacts within the spindle range
         if sum(data["Beta_Labels"][start:end]) == 0:  # and np.isnan(sum(data["ArtZero"][start:end])) is False:
@@ -124,6 +152,9 @@ def detect_spindles(data):
 
         count = count+1
         print("Spindles set: %d" % count)
+
+    # Add the states to the summary vector
+    summary["State"] = spindleStates
 
     # # Remove the spindles with beta noise marked as 1
     for i in range(len(Beta_Noise)):

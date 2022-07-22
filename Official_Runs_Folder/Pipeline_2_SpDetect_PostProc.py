@@ -1,6 +1,5 @@
 import pathlib
 import My_Funcs as my
-import matplotlib.pyplot as plt
 import pandas as pd
 import yasa
 import mne
@@ -67,19 +66,19 @@ count = 0
 data_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/APNEA Raw Files/Analysis_EDFs/")
 
 # Directory for official running
-pipdir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Pipeline2/")
+pipdir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/PipTest/")
 pipdir.mkdir(parents=True, exist_ok=True)
 
 # Shared directory for official runs
-dict_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Pipeline2/Excel_Data_All/")
+dict_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/PipTest/Excel_Data_All/")
 dict_dir.mkdir(parents=True, exist_ok=True)
 
 # Plot directory for saving density graphs
-dens_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Pipeline2/Hypnogram_Plots/")
+dens_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/PipTest/Hypnogram_Plots/")
 dens_dir.mkdir(parents=True, exist_ok=True)
 
 # Official error directory
-error_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/Pipeline2/Error_Storage/")
+error_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/PipTest/Error_Storage/")
 error_dir.mkdir(parents=True, exist_ok=True)
 
 
@@ -235,17 +234,28 @@ for file in files:
                 8) Yasa spindle detection
                 9) Noise spindle elimination
                 """
-                spindles = my.detect_spindles(data)
+
+                # Get the hypnograms so that you have the states to include in the spindle file
+                Night1_sls = yasa.SleepStaging(raw=rawImport, eeg_name="EEG", eog_name="LEOG")
+
+                # Get hypno objects
+                Night1_Hypno = Night1_sls.predict()
+
+                # Convert the hypnograms to numbers
+                HypnoEnum = my.hypno_to_plot_art(Night1_Hypno)
+
+                # Detect spindles
+                spindles = my.detect_spindles(data, HypnoEnum, night=1, samples1=0)
 
                 """
                 10) Spectrogram analysis
                 """
                 spindles = my.time_frequency_analysis(data, spindles)
 
-                """
-                11) Plot the density and hypnograms
-                """
-                my.plot_density(rawImport, data, ID, spindles, dens_dir, 1)
+                # """                                               # We are making these plots separately
+                # 11) Plot the density and hypnograms
+                # """
+                # my.plot_density(rawImport, data, ID, spindles, dens_dir, 1)
 
                 """
                 12) Save spindle data to excel
@@ -324,9 +334,42 @@ for file in files:
                 8) Yasa spindle detection
                 9) Noise spindle elimination
                 """
+
+                # # Copy raw import to second one for cropping night 2
+                # rawImport2 = rawImport.copy()
+                # # Split the data into two nights
+                # Night_1 = rawImport.crop(tmin=0, tmax=sample_n1 / rawImport.info["sfreq"], include_tmax=False)
+                # Night_2 = rawImport2.crop(tmin=sample_n1 / rawImport.info["sfreq"],
+                #                           tmax=(len(rawImport2) / rawImport.info["sfreq"]) - 60, include_tmax=False)
+
+                """
+                4) Compute hypnograms for each night
+                """
+                # # Calculate sleep stages using EEG and EOG channels on the filtered data
+                # print("Sleep staging...")
+                # Night1_sls = yasa.SleepStaging(raw=Night_1, eeg_name="EEG", eog_name="LEOG")
+                # Night2_sls = yasa.SleepStaging(raw=Night_2, eeg_name="EEG", eog_name="LEOG")
+                #
+                # # Get hypno objects
+                # Night1_Hypno = Night1_sls.predict()
+                # Night2_Hypno = Night2_sls.predict()
+                #
+                # # Convert the hypnograms to numbers
+                # Night1_HypnoEnum = my.hypno_to_plot_art(Night1_Hypno)
+                # Night2_HypnoEnum = my.hypno_to_plot_art(Night2_Hypno)
+
+                # Get the hypnograms so that you have the states to include in the spindle file
+                Night1_sls = yasa.SleepStaging(raw=rawImport, eeg_name="EEG", eog_name="LEOG")
+
+                # Get hypno objects
+                Night1_Hypno = Night1_sls.predict()
+
+                # Convert the hypnograms to numbers
+                HypnoEnum = my.hypno_to_plot_art(Night1_Hypno)
+
                 # This function detects the spindles and does our artifact based elimination
-                Spindles_N1 = my.detect_spindles(Data_N1)
-                Spindles_N2 = my.detect_spindles(Data_N2)
+                Spindles_N1 = my.detect_spindles(Data_N1, HypnoEnum, night=1, samples1=0)
+                Spindles_N2 = my.detect_spindles(Data_N2, HypnoEnum, night=2, samples1=sample_n1)
 
                 """
                 10) Spectrogram analysis
@@ -335,12 +378,12 @@ for file in files:
                 Spindles_N1 = my.time_frequency_analysis(Data_N1, Spindles_N1)
                 Spindles_N2 = my.time_frequency_analysis(Data_N2, Spindles_N2)
 
-                """
-                11) Plot the density and hypnograms
-                """
-                print("Plotting density and hypnograms")
-                my.plot_density(rawImport, Data_N1, ID, Spindles_N1, dens_dir, 1)
-                my.plot_density(rawImport, Data_N2, ID, Spindles_N2, dens_dir, 2)
+                # """
+                # 11) Plot the density and hypnograms
+                # """
+                # print("Plotting density and hypnograms")
+                # my.plot_density(rawImport, Data_N1, ID, Spindles_N1, dens_dir, 1)
+                # my.plot_density(rawImport, Data_N2, ID, Spindles_N2, dens_dir, 2)
 
                 """
                 12) Save spindle data to excel
