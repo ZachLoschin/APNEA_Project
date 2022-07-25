@@ -397,3 +397,109 @@ lines(density(durationValuesnonosa), col='blue')
 legend("topleft", c("Cases OSA", "Cases NonOSA"), fill=c("red", "blue"))
 
 
+
+################################################################################
+#
+# This code block completes the T-tests between frequency and duration between
+# Cases: OSA and Controls: OSA. Then, graphs are generated and displayed in
+# the plots window for visual inspection
+#
+################################################################################
+
+
+# Night 1 T-Tests
+freqsTTestN1 = t.test(freqsCasesOsaN1, freqsControlsOsaN1)
+durationTTestN1 = t.test(durationCasesOsaN1, durationControlsOsaN1)
+
+# Night 2 T-Tests
+freqsTTestN2 = t.test(freqsCasesOsaN2, freqsControlsOsaN2)
+durationTTestN2 = t.test(durationCasesOsaN2, durationControlsOsaN2)
+
+# Night 1 graph freqs
+freqValuesOSA = na.omit(freqsCasesOsaN1)
+freqValuesnonosa = na.omit(freqsControlsOsaN1)
+hist(freqValuesOSA, col=myRed, breaks=25, xlab="Spindle Frequency", 
+     ylab="Number of Patients",
+     main = paste("Frequency Cases Osa Vs Controls Osa Comparison Night 1\nT-Test P-val =", 
+                  round(freqsTTestN1$p.value, digits=3), 
+                  "\n", "DF =", round(freqsTTestN1$parameter, digits=3)))
+
+lines(density(freqValuesOSA), col='red')
+
+hist(freqValuesnonosa, col=myBlue, breaks=25, xlab="Spindle Frequency", 
+     ylab="Number of Patients",
+     main = paste("Frequency Cases Osa Vs Controls OSA Comparison Night 1 \nT-Test P-val =", 
+                  round(freqsTTestN1$p.value, digits=3), 
+                  "\n", "DF =", round(freqsTTestN1$parameter, digits=3)), add=TRUE)
+
+lines(density(freqValuesnonosa), col='blue')
+legend("topleft", c("Cases OSA", "Controls OSA"), fill=c("red", "blue"))
+
+
+
+# Night 2 graph freqs
+freqValuesOSA = na.omit(freqsCasesOsaN2)
+freqValuesnonosa = na.omit(freqsControlsOsaN2)
+hist(freqValuesOSA, col=myRed, breaks=25, xlab="Spindle Frequency", 
+     ylab="Number of Patients",
+     main = paste("Frequency Cases Osa Vs Controls Osa Comparison Night 2\nT-Test P-val =", 
+                  round(freqsTTestN1$p.value, digits=3), 
+                  "\n", "DF =", round(freqsTTestN1$parameter, digits=3)))
+
+lines(density(freqValuesOSA), col='red')
+
+hist(freqValuesnonosa, col=myBlue, breaks=25, xlab="Spindle Frequency", 
+     ylab="Number of Patients",
+     main = paste("Frequency Cases Osa Vs Controls OSA Comparison Night 2\nT-Test P-val =", 
+                  round(freqsTTestN1$p.value, digits=3), 
+                  "\n", "DF =", round(freqsTTestN1$parameter, digits=3)), add=TRUE)
+
+lines(density(freqValuesnonosa), col='blue')
+legend("topleft", c("Cases OSA", "Controls OSA"), fill=c("red", "blue"))
+
+
+# Night 1 graphs duration
+durationValuesOSA = na.omit(durationCasesOsaN1)
+durationValuesnonosa= na.omit(durationControlsOsaN1)
+hist(durationValuesOSA, col=myRed, breaks=25, xlab="Spindle Duration", 
+     ylab="Number of Patients",
+     ylim=c(0,5),
+     main = paste("Spindle Duration Cases Osa Vs Controls OSA Comparison Night 1 \nT-Test P-val =", 
+                  round(freqsTTestN1$p.value, digits=3), 
+                  "\n", "DF =", round(freqsTTestN1$parameter, digits=3)))
+
+lines(density(durationValuesOSA), col='red')
+
+hist(durationValuesnonosa, col=myBlue, breaks=25, xlab="Spindle Frequency", 
+     ylab="Number of Patients",
+     main = paste("Duration Cases Osa Vs Controls OSA Comparison Night 1 \nT-Test P-val =", 
+                  round(freqsTTestN1$p.value, digits=3), 
+                  "\n", "DF =", round(freqsTTestN1$parameter, digits=3)), add=TRUE)
+
+lines(density(durationValuesnonosa), col='blue')
+legend("topleft", c("Cases OSA", "Controls OSA"), fill=c("red", "blue"))
+
+
+
+# Night 2 graphs duration
+durationValuesOSA = na.omit(durationCasesOsaN2)
+durationValuesnonosa= na.omit(durationControlsOsaN2)
+hist(durationValuesOSA, col=myRed, breaks=25, xlab="Spindle Duration", 
+     ylab="Number of Patients",
+     ylim=c(0,5),
+     main = paste("Spindle Duration Cases Osa Vs Controls OSA Comparison Night 2 \nT-Test P-val =", 
+                  round(freqsTTestN1$p.value, digits=3), 
+                  "\n", "DF =", round(freqsTTestN1$parameter, digits=3)))
+
+lines(density(durationValuesOSA), col='red')
+
+hist(durationValuesnonosa, col=myBlue, breaks=25, xlab="Spindle Frequency", 
+     ylab="Number of Patients",
+     main = paste("Duration Cases Osa Vs Controls OSA Comparison Night 2 \nT-Test P-val =", 
+                  round(freqsTTestN1$p.value, digits=3), 
+                  "\n", "DF =", round(freqsTTestN1$parameter, digits=3)), add=TRUE)
+
+lines(density(durationValuesnonosa), col='blue')
+legend("topleft", c("Cases OSA", "Controls OSA"), fill=c("red", "blue"))
+
+
