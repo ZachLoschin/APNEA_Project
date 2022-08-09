@@ -22,7 +22,9 @@ Sleep Apnea Project
 2) Use MNE IIR filter to low pass 18Hz cut off
 3) Split patient data by night
 4) Split to .EDF files
-5) Save the data to .EDF
+5) Take hypnograms of each night
+6) Get percent time spent in each stage
+7) Save edf file data
 """
 
 # Local data folder for testing
@@ -68,7 +70,7 @@ for file in files:
         """
         2) Use MNE IIR filter
         """
-        filteredData = rawImport.filter(l_freq=None, h_freq=18, picks=["EEG"], method='iir')
+        # filteredData = rawImport.filter(l_freq=None, h_freq=18, picks=["EEG"], method='iir')
         eeg = rawImport["EEG"][0][0]
 
         """
@@ -108,13 +110,54 @@ for file in files:
         """
         4) Split to .EDF files
         """
+        # Copy raw import to second one for cropping night 2
+        rawImport2 = rawImport.copy()
         # Split the data into two nights
-        Night_1 = rawImport.crop(tmin=0, tmax=(len(rawImport) / rawImport.info["sfreq"]) - 60, include_tmax=False)
-        # Night_2 = rawImport.crop(tmin=sample_n1 / rawImport.info["sfreq"],
-                                 # tmax=(len(rawImport) / rawImport.info["sfreq"]) - 60, include_tmax=False)
+        Night_1 = rawImport.crop(tmin=0, tmax=sample_n1 / rawImport.info["sfreq"], include_tmax=False)
+        Night_2 = rawImport2.crop(tmin=sample_n1 / rawImport.info["sfreq"],
+                                  tmax=(len(rawImport2) / rawImport.info["sfreq"]) - 60, include_tmax=False)
 
         """
-        5) Save the data to .EDF
+        5) Take hypnograms of each night
+        """
+        # Calculate sleep stages using EEG and EOG channels on the filtered data
+        print("Sleep staging...")
+        Night1_sls = yasa.SleepStaging(raw=Night_1, eeg_name="EEG", eog_name="LEOG")
+        Night2_sls = yasa.SleepStaging(raw=Night_2, eeg_name="EEG", eog_name="LEOG")
+
+        # Get hypno objects
+        Night1_Hypno = Night1_sls.predict()
+        Night2_Hypno = Night2_sls.predict()
+
+        # Convert the hypnograms to numbers
+        Night1_HypnoEnum = my.hypno_to_plot_art(Night1_Hypno)
+        Night2_HypnoEnum = my.hypno_to_plot_art(Night2_Hypno)
+
+        """
+        6) Plot the hypnograms and save them to directory
+        """
+        # Create filenames for saving figures
+        Night1_File = "%s_Night1_Hypno_unfilt_eog.png" % ID
+        Night2_File = "%s_Night2_Hypno_unfilt_eog.png" % ID
+
+        # Create paths for saving figures
+        Night1_Path = dens_dir / Night1_File
+        Night2_Path = dens_dir / Night2_File
+
+        # Plot and save hypnogram for night 1
+        plt.plot(Night1_HypnoEnum)
+
+        plt.savefig(Night1_Path)
+        plt.clf()
+
+        # Plot and save hypnogram for night 2
+        plt.plot(Night2_HypnoEnum)
+
+        plt.savefig(Night2_Path)
+        plt.clf()
+        print("Done")
+        """
+        7) Save the data to .EDF
         """
         # Make filenames
         nameN1 = "%s_N1" % ID
@@ -126,4 +169,11 @@ for file in files:
 
         # Save .EDF
         Night_1.export(fname=pathN1, fmt='edf')
-        # Night_2.export(fname=pathN2, fmt='edf')
+        Night_2.export(fname=pathN2, fmt='edf')
+
+
+"""
+5) Take hypnograms of each night
+6) Get percent time spent in each stage
+7) Save edf file data
+"""

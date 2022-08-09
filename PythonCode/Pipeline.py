@@ -211,7 +211,7 @@ for file in files:
 
             # If there is left over in the middle, take midpoint
             if sample_n2 + sample_n1 < len(data["EEG"]):
-                gap = len(data["EEG"]) - sample_n2 + sample_n1
+                gap = len(data["EEG"]) - sample_n2 - sample_n1 # Changed the second minus to minus from a plus 7/21/22 ZFL
 
                 # Set sample one to include first half of gap
                 sample_n1 = sample_n1 + (0.5 * gap)
