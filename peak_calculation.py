@@ -9,16 +9,32 @@ import mne
 import scipy
 
 ''''
+Disclaimer: This code is mainly copied from Zachary's code.
+
 What this code does:
-    1. Create directories
-    2. Yasa spindle detection
+    0. Create directories
+    1. Read archives
+        a. Raw data import
+        b. Creation of our data dictionary
+        c. Split the data by the night vector
+    2. YASA sleep scoring (EEG + EOG)
+        a. Yasa spindle detection
+        b. Noise spindle elimination
     3. Artifact removal
-    4. Filters: band pass filter and beta pass filter
-    5. ...
+        a. Create label vec with artifact locations as Nan)
+        b. By arousals (using beta band)
+    4. Filter
+        a. Band pass filter the EEG data (10-16 Hz)
+        b. Upper Beta pass filter to graph (20-50 Hz)
+    5. Select only N2 and N3 of the Sleep Scoring
+    6. Do PSD (IRASA)
+        a. All band
+        b. Only slow spindles (9 - 12.5 Hz)
+        c. Only fast spindles (12.5 - 16 Hz)
 '''
 
 '''
-Create directories
+0. Create directories
 '''
 
 # Local data folder for testing
@@ -77,11 +93,11 @@ DivDF = pd.read_excel(div_data)
 #     plt.show()
 
 '''
-Read archives (Raw data import)
+1. Read archives
 '''
 
 """
-1) Raw data import
+a) Raw data import
 """
 split_array = str(file).split('\\')
 name = split_array[-1]
@@ -94,7 +110,7 @@ ID = my.get_ID(file)
 print(ID)
 
 """
-2) Creation of our data dictionary
+b) Creation of our data dictionary
 """
 print("Creating dict...")
 # Create epoch vector
@@ -113,7 +129,7 @@ data["LEOG"] = rawImport["LEOG"][0][0]
 data["HMov"] = rawImport["HMov"][0][0]
 
 """
-7) Split the data by the night vector
+c) Split the data by the night vector
 """
 # Get the recording times for night 1 and 2
 DivDF_Patient = DivDF.loc[DivDF["EDF_ID"] == ID]
@@ -181,21 +197,21 @@ YASA sleep scoring (EEG + EOG (LEOG, REOG))
 '''
 
 """
-8) Yasa spindle detection
-9) Noise spindle elimination
+a) Yasa spindle detection
+b) Noise spindle elimination
 """
 # This function detects the spindles and does our artifact based elimination
 Spindles_N1 = my.detect_spindles(Data_N1)
 Spindles_N2 = my.detect_spindles(Data_N2)
 
 '''
-Detection and removal of artifacts by amplitude
+Detection and removal of artifacts
 '''
 
 # See in the signal any point that goes above 250uV
 # and convert it to NaN
 """
-3) Artifact removal (create label vec with artifact locations as Nan)
+a) Create label vec with artifact locations as NaN)
 """
 start = 100000
 finish = start + 7680
@@ -216,7 +232,7 @@ for i in range(len(data["REOG"])):
         data["REOG"][i] = 0
 
 '''
-Removal of artifacts by arousals (using beta band)
+b) By arousals (using beta band)
 '''
 
 # Band pass filter (20-50 Hz)
