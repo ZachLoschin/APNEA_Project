@@ -67,19 +67,22 @@ data_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/APNEA Raw Fi
 
 # Directory for official running
 pipdir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/PipTest/")
-pipdir.mkdir(parents=True, exist_ok=True)
+pipdir.mkdir(parents=True, exist_ok=False)
 
 # Shared directory for official runs
 dict_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/PipTest/Excel_Data_All/")
-dict_dir.mkdir(parents=True, exist_ok=True)
+dict_dir.mkdir(parents=True, exist_ok=False)
+
+sw_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/PipTest/SlowWaves/")
+dict_dir.mkdir(parents=True, exist_ok=False)
 
 # Plot directory for saving density graphs
 dens_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/PipTest/Hypnogram_Plots/")
-dens_dir.mkdir(parents=True, exist_ok=True)
+dens_dir.mkdir(parents=True, exist_ok=False)
 
 # Official error directory
 error_dir = pathlib.Path("Z:/ResearchHome/ClusterHome/asanch24/APNEA/PipTest/Error_Storage/")
-error_dir.mkdir(parents=True, exist_ok=True)
+error_dir.mkdir(parents=True, exist_ok=False)
 
 
 """
@@ -371,6 +374,9 @@ for file in files:
                 Spindles_N1 = my.detect_spindles(Data_N1, HypnoEnum, night=1, samples1=0)
                 Spindles_N2 = my.detect_spindles(Data_N2, HypnoEnum, night=2, samples1=sample_n1)
 
+                SW_N1 = my.detect_slow_wave(Data_N1)
+                SW_N2 = my.detect_slow_wave(Data_N2)
+
                 """
                 10) Spectrogram analysis
                 """
@@ -393,10 +399,18 @@ for file in files:
                 n1Path = dict_dir / n1File
                 Spindles_N1.to_excel(n1Path)
 
+                n1SWFile = "SlowWaves_%s_N1.xlsx" % ID
+                n1SWPath = sw_dir / n1SWFile
+                SW_N1.to_excel(n1SWPath)
+
                 # Saving night 2
                 n2File = "Spindle_%s_N2.xlsx" % ID
                 n2Path = dict_dir / n2File
                 Spindles_N2.to_excel(n2Path)
+
+                n2SWFile = "SlowWaves_%s_N1.xlsx" % ID
+                n2SWPath = sw_dir / n2SWFile
+                SW_N2.to_excel(n2SWPath)
 
                 print("********Completed number: %d ********", count)
     except:

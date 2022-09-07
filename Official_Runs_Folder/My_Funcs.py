@@ -298,3 +298,8 @@ def time_frequency_analysis(data, summary):
     summary = summary.loc[summary["Mult_Peaks"] == 0]
 
     return summary
+
+
+def detect_slow_wave(Data):
+    sw = yasa.sw_detect(Data, sf=256)
+    return sw.summary()
