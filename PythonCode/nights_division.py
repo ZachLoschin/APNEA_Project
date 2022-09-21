@@ -178,7 +178,7 @@ for file in files:
 
                 # Divide nights
                 night_1 = rawImport.copy().crop(tmin=0, tmax=values[0]/256)
-                night_2 = rawImport.copy().crop(tmin=values[0]/256, tmax=values[-1]/256)
+                night_2 = rawImport.copy().crop(tmin=values[0]/256)
 
                 # Assign and plot divided nights
                 data, time = night_1['Airflow']
