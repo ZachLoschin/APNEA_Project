@@ -163,37 +163,32 @@ for file in files:
                 Night1_HypnoEnum = my.hypno_to_plot_art(Night1_Hypno)
 
             elif nights == 2:
-                # Get total time of recording
-                total_time = DivDF_Patient.iloc[0]['RecordingTime'] # in hours
-
                 # Get sampling frequency
                 samp_freq = rawImport.info['sfreq']
-
-                # Convert these recording times to seconds then to samples
-                total_samples = (total_time * 3600) * samp_freq
 
                 # Get data from Airflow
                 data, time = rawImport['Airflow']
                 data = np.squeeze(data) # reduces data dimensions
 
-                # Find peaks in Airflow data
-                peaks_values = [] # peaks_freq list
-                for peak_freq in data:
-                    if peak_freq > 3000:
-                        peaks_values.append(peak_freq)
+                # Find peaks (amplitude) in Airflow data
+                peaks_values = [] # peak_amp list
+                for peak_amp in data:
+                    if peak_amp > 3000:
+                        peaks_values.append(peak_amp)
                 
                 #print(peaks_freq)
-                
-                peaks_keys = [] # peak_index list
-                peaks_bool = data > 3000 # could be any number over 2000 probably
-                for peak_index, peak in enumerate(peaks_bool):
-                    if peak_index:
+
+                # Find peaks (position) in Airflow data
+                peaks_keys = [] # peak_pos list
+                is_peak = data > 2000 # could be any number over 2000
+                for peak_pos, peak in enumerate(is_peak):
+                    if peak_pos:
                         # If the peak is over 3000:
                         if peak:
-                            peaks_keys.append(peak_index)
+                            peaks_keys.append(peak_pos)
                 
-                # Creats dict
-                peaks = {}
+                # Creats dictionary with Airflow peaks
+                peaks = {} # key: peak_pos, value: peak_amp
                 for key in peaks_keys:
                     for value in peaks_values:
                         peaks[key] = value
@@ -202,32 +197,32 @@ for file in files:
 
                 #print(peaks)
 
-                # Assumes peak is at least 1 hr from start and 1 hr from finish
+                # Removes peaks that are less than 1 hr from t = 0
                 for key in peaks.copy():
-                    if key <= samp_freq * 3600: #or key >= total_samples - samp_freq * 3600:
+                    if key <= samp_freq * 3600:
                         peaks.pop(key)
 
-                print(peaks)
+                #print(peaks)
 
-                # Finds max peak
-                max_peak = max(peaks)
+                # Finds maximum peak
+                max_peak = max(peaks, key=peaks.get)
 
-                print(max(data))
+                #print(max_peak)
 
-                # # Divide nights
-                # night_1 = rawImport.copy().crop(tmin=0, tmax=max_peak/256)
-                # night_2 = rawImport.copy().crop(tmin=max_peak/256)
+                # Divide nights
+                night_1 = rawImport.copy().crop(tmin=0, tmax=max_peak/256)
+                night_2 = rawImport.copy().crop(tmin=max_peak/256)
 
-                # # Assign and plot divided nights
-                # data, time = night_1['Airflow']
-                # data = np.squeeze(data)
-                # plt.plot(time, data)
-                # plt.show()
+                # Assign and plot divided nights
+                data, time = night_1['Airflow']
+                data = np.squeeze(data)
+                plt.plot(time, data)
+                plt.show()
 
-                # data, time = night_2['Airflow']
-                # data = np.squeeze(data)
-                # plt.plot(time, data)
-                # plt.show()
+                data, time = night_2['Airflow']
+                data = np.squeeze(data)
+                plt.plot(time, data)
+                plt.show()
 
     except Exception as e:
         print(str(e))
