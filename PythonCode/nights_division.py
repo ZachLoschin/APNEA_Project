@@ -163,33 +163,71 @@ for file in files:
                 Night1_HypnoEnum = my.hypno_to_plot_art(Night1_Hypno)
 
             elif nights == 2:
+                # Get total time of recording
+                total_time = DivDF_Patient.iloc[0]['RecordingTime'] # in hours
+
+                # Get sampling frequency
+                samp_freq = rawImport.info['sfreq']
+
+                # Convert these recording times to seconds then to samples
+                total_samples = (total_time * 3600) * samp_freq
+
                 # Get data from Airflow
                 data, time = rawImport['Airflow']
                 data = np.squeeze(data) # reduces data dimensions
 
                 # Find peaks in Airflow data
-                peaks = data > 3000 # could be any number over 2000 probably
-                values = []
-                for peak_index, peak in enumerate(peaks):
-                    if peak_index >= 256*60*60: # assumes peak is at least 1 hr from start (t=0)
+                peaks_values = [] # peaks_freq list
+                for peak_freq in data:
+                    if peak_freq > 3000:
+                        peaks_values.append(peak_freq)
+                
+                #print(peaks_freq)
+                
+                peaks_keys = [] # peak_index list
+                peaks_bool = data > 3000 # could be any number over 2000 probably
+                for peak_index, peak in enumerate(peaks_bool):
+                    if peak_index:
                         # If the peak is over 3000:
                         if peak:
-                            values.append(peak_index)
+                            peaks_keys.append(peak_index)
+                
+                # Creats dict
+                peaks = {}
+                for key in peaks_keys:
+                    for value in peaks_values:
+                        peaks[key] = value
+                        peaks_values.remove(value)  
+                        break
 
-                # Divide nights
-                night_1 = rawImport.copy().crop(tmin=0, tmax=values[0]/256)
-                night_2 = rawImport.copy().crop(tmin=values[0]/256)
+                #print(peaks)
 
-                # Assign and plot divided nights
-                data, time = night_1['Airflow']
-                data = np.squeeze(data)
-                plt.plot(time, data)
-                plt.show()
+                # Assumes peak is at least 1 hr from start and 1 hr from finish
+                for key in peaks.copy():
+                    if key <= samp_freq * 3600: #or key >= total_samples - samp_freq * 3600:
+                        peaks.pop(key)
 
-                data, time = night_2['Airflow']
-                data = np.squeeze(data)
-                plt.plot(time, data)
-                plt.show()
+                print(peaks)
+
+                # Finds max peak
+                max_peak = max(peaks)
+
+                print(max(data))
+
+                # # Divide nights
+                # night_1 = rawImport.copy().crop(tmin=0, tmax=max_peak/256)
+                # night_2 = rawImport.copy().crop(tmin=max_peak/256)
+
+                # # Assign and plot divided nights
+                # data, time = night_1['Airflow']
+                # data = np.squeeze(data)
+                # plt.plot(time, data)
+                # plt.show()
+
+                # data, time = night_2['Airflow']
+                # data = np.squeeze(data)
+                # plt.plot(time, data)
+                # plt.show()
 
     except Exception as e:
         print(str(e))
